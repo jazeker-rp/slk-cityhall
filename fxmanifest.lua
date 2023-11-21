@@ -1,13 +1,13 @@
 fx_version 'cerulean'
 game 'gta5'
 
-description 'QB-CityHall'
+description 'slk-CityHall'
 version '2.1.3'
 
 ui_page 'html/index.html'
 
 shared_scripts {
-    '@qb-core/shared/locale.lua',
+    '@slk-core/shared/locale.lua',
     'locales/en.lua',
     'locales/*.lua',
     'config.lua'
@@ -16,8 +16,8 @@ shared_scripts {
 server_script 'server/main.lua'
 
 client_scripts {
-    '@PolyZone/client.lua',
-    '@PolyZone/BoxZone.lua',
+    '@slk-polyzones/client.lua',
+    '@slk-polyzones/BoxZone.lua',
     'client/main.lua'
 }
 

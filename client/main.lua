@@ -1,4 +1,4 @@
-local QBCore = exports['qb-core']:GetCoreObject()
+local QBCore = exports['slk-core']:GetCoreObject()
 local PlayerData = QBCore.Functions.GetPlayerData()
 local isLoggedIn = LocalPlayer.state.isLoggedIn
 local playerPed = PlayerPedId()
@@ -42,7 +42,7 @@ local function getClosestSchool()
 end
 
 local function getJobs()
-    QBCore.Functions.TriggerCallback('qb-cityhall:server:receiveJobs', function(result)
+    QBCore.Functions.TriggerCallback('slk-cityhall:server:receiveJobs', function(result)
         SendNUIMessage({
             action = 'setJobs',
             jobs = result
@@ -142,7 +142,7 @@ local function spawnPeds()
                     label = 'Take Driving Lessons',
                     icon = 'fa-solid fa-car-side',
                     action = function()
-                        TriggerServerEvent('qb-cityhall:server:sendDriverTest', Config.DrivingSchools[closestDrivingSchool].instructors)
+                        TriggerServerEvent('slk-cityhall:server:sendDriverTest', Config.DrivingSchools[closestDrivingSchool].instructors)
                     end
                 }
             elseif current.cityhall then
@@ -156,7 +156,7 @@ local function spawnPeds()
                 }
             end
             if opts then
-                exports['qb-target']:AddTargetEntity(ped, {
+                exports['slk-target']:AddTargetEntity(ped, {
                     options = { opts },
                     distance = 2.0
                 })
@@ -176,13 +176,13 @@ local function spawnPeds()
                         if inside then
                             if current.drivingschool then
                                 inRangeDrivingSchool = true
-                                exports['qb-core']:DrawText('[E] Take Driving Lessons')
+                                exports['slk-core']:DrawText('[E] Take Driving Lessons')
                             elseif current.cityhall then
                                 inRangeCityhall = true
-                                exports['qb-core']:DrawText('[E] Open Cityhall')
+                                exports['slk-core']:DrawText('[E] Open Cityhall')
                             end
                         else
-                            exports['qb-core']:HideText()
+                            exports['slk-core']:HideText()
                             if current.drivingschool then
                                 inRangeDrivingSchool = false
                             elseif current.cityhall then
@@ -226,21 +226,21 @@ RegisterNetEvent('QBCore:Player:SetPlayerData', function(val)
     PlayerData = val
 end)
 
-RegisterNetEvent('qb-cityhall:Client:AddCityJob', function()
+RegisterNetEvent('slk-cityhall:Client:AddCityJob', function()
     getJobs()
 end)
 
-RegisterNetEvent('qb-cityhall:client:getIds', function()
-    TriggerServerEvent('qb-cityhall:server:getIDs')
+RegisterNetEvent('slk-cityhall:client:getIds', function()
+    TriggerServerEvent('slk-cityhall:server:getIDs')
 end)
 
-RegisterNetEvent('qb-cityhall:client:sendDriverEmail', function(charinfo)
+RegisterNetEvent('slk-cityhall:client:sendDriverEmail', function(charinfo)
     SetTimeout(math.random(2500, 4000), function()
         local gender = Lang:t('email.mr')
         if PlayerData.charinfo.gender == 1 then
             gender = Lang:t('email.mrs')
         end
-        TriggerServerEvent('qb-phone:server:sendNewMail', {
+        TriggerServerEvent('slk-phone:server:sendNewMail', {
             sender = Lang:t('email.sender'),
             subject = Lang:t('email.subject'),
             message = Lang:t('email.message', { gender = gender, lastname = charinfo.lastname, firstname = charinfo.firstname, phone = charinfo.phone }),
@@ -259,14 +259,14 @@ end)
 
 RegisterNUICallback('close', function(_, cb)
     setCityhallPageState(false, false)
-    if not Config.UseTarget and inRangeCityhall then exports['qb-core']:DrawText('[E] Open Cityhall') end -- Reopen interaction when you're still inside the zone
+    if not Config.UseTarget and inRangeCityhall then exports['slk-core']:DrawText('[E] Open Cityhall') end -- Reopen interaction when you're still inside the zone
     cb('ok')
 end)
 
 RegisterNUICallback('requestId', function(id, cb)
     local license = Config.Cityhalls[closestCityhall].licenses[id.type]
     if inRangeCityhall and license and id.cost == license.cost then
-        TriggerServerEvent('qb-cityhall:server:requestId', id.type, closestCityhall)
+        TriggerServerEvent('slk-cityhall:server:requestId', id.type, closestCityhall)
         QBCore.Functions.Notify(('You have received your %s for $%s'):format(license.label, id.cost), 'success', 3500)
     else
         QBCore.Functions.Notify(Lang:t('error.not_in_range'), 'error')
@@ -287,7 +287,7 @@ end)
 
 RegisterNUICallback('applyJob', function(job, cb)
     if inRangeCityhall then
-        TriggerServerEvent('qb-cityhall:server:ApplyJob', job, Config.Cityhalls[closestCityhall].coords)
+        TriggerServerEvent('slk-cityhall:server:ApplyJob', job, Config.Cityhalls[closestCityhall].coords)
     else
         QBCore.Functions.Notify(Lang:t('error.not_in_range'), 'error')
     end
@@ -320,20 +320,20 @@ CreateThread(function()
                         sleep = 0
                         if IsControlJustPressed(0, 38) then
                             setCityhallPageState(true, true)
-                            exports['qb-core']:KeyPressed()
+                            exports['slk-core']:KeyPressed()
                             Wait(500)
-                            exports['qb-core']:HideText()
+                            exports['slk-core']:HideText()
                             sleep = 1000
                         end
                     end
                 elseif inRangeDrivingSchool then
                     sleep = 0
                     if IsControlJustPressed(0, 38) then
-                        TriggerServerEvent('qb-cityhall:server:sendDriverTest', Config.DrivingSchools[closestDrivingSchool].instructors)
+                        TriggerServerEvent('slk-cityhall:server:sendDriverTest', Config.DrivingSchools[closestDrivingSchool].instructors)
                         sleep = 5000
-                        exports['qb-core']:KeyPressed()
+                        exports['slk-core']:KeyPressed()
                         Wait(500)
-                        exports['qb-core']:HideText()
+                        exports['slk-core']:HideText()
                     end
                 end
             end

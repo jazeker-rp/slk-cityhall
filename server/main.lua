@@ -1,4 +1,4 @@
-local QBCore = exports['qb-core']:GetCoreObject()
+local QBCore = exports['slk-core']:GetCoreObject()
 local availableJobs = {}
 
 if not QBCore.Shared.QBJobsStatus then
@@ -44,13 +44,13 @@ end
 
 -- Callbacks
 
-QBCore.Functions.CreateCallback('qb-cityhall:server:receiveJobs', function(_, cb)
+QBCore.Functions.CreateCallback('slk-cityhall:server:receiveJobs', function(_, cb)
     cb(availableJobs)
 end)
 
 -- Events
 
-RegisterNetEvent('qb-cityhall:server:requestId', function(item, hall)
+RegisterNetEvent('slk-cityhall:server:requestId', function(item, hall)
     local src = source
     local Player = QBCore.Functions.GetPlayer(src)
     if not Player then return end
@@ -80,7 +80,7 @@ RegisterNetEvent('qb-cityhall:server:requestId', function(item, hall)
     TriggerClientEvent('inventory:client:ItemBox', src, QBCore.Shared.Items[item], 'add')
 end)
 
-RegisterNetEvent('qb-cityhall:server:sendDriverTest', function(instructors)
+RegisterNetEvent('slk-cityhall:server:sendDriverTest', function(instructors)
     local src = source
     local Player = QBCore.Functions.GetPlayer(src)
     if not Player then return end
@@ -88,7 +88,7 @@ RegisterNetEvent('qb-cityhall:server:sendDriverTest', function(instructors)
         local citizenid = instructors[i]
         local SchoolPlayer = QBCore.Functions.GetPlayerByCitizenId(citizenid)
         if SchoolPlayer then
-            TriggerClientEvent("qb-cityhall:client:sendDriverEmail", SchoolPlayer.PlayerData.source, Player.PlayerData.charinfo)
+            TriggerClientEvent("slk-cityhall:client:sendDriverEmail", SchoolPlayer.PlayerData.source, Player.PlayerData.charinfo)
         else
             local mailData = {
                 sender = "Township",
@@ -96,13 +96,13 @@ RegisterNetEvent('qb-cityhall:server:sendDriverTest', function(instructors)
                 message = "Hello,<br><br>We have just received a message that someone wants to take driving lessons.<br>If you are willing to teach, please contact them:<br>Name: <strong>" .. Player.PlayerData.charinfo.firstname .. " " .. Player.PlayerData.charinfo.lastname .. "<br />Phone Number: <strong>" .. Player.PlayerData.charinfo.phone .. "</strong><br><br>Kind regards,<br>Township Los Santos",
                 button = {}
             }
-            exports["qb-phone"]:sendNewMailToOffline(citizenid, mailData)
+            exports["slk-phone"]:sendNewMailToOffline(citizenid, mailData)
         end
     end
     TriggerClientEvent('QBCore:Notify', src, "An email has been sent to driving schools, and you will be contacted automatically", "success", 5000)
 end)
 
-RegisterNetEvent('qb-cityhall:server:ApplyJob', function(job, cityhallCoords)
+RegisterNetEvent('slk-cityhall:server:ApplyJob', function(job, cityhallCoords)
     local src = source
     local Player = QBCore.Functions.GetPlayer(src)
     if not Player then return end
@@ -117,7 +117,7 @@ RegisterNetEvent('qb-cityhall:server:ApplyJob', function(job, cityhallCoords)
         return false -- DropPlayer(source, "Attempted exploit abuse")
     end
     if QBCore.Shared.QBJobsStatus then
-        exports["qb-jobs"]:submitApplication(data, "Jobs")
+        exports["slk-jobs"]:submitApplication(data, "Jobs")
     else
         local JobInfo = QBCore.Shared.Jobs[job]
         Player.Functions.SetJob(data.job, 0)
@@ -125,10 +125,10 @@ RegisterNetEvent('qb-cityhall:server:ApplyJob', function(job, cityhallCoords)
     end
 end)
 
-RegisterNetEvent('qb-cityhall:server:getIDs', giveStarterItems)
+RegisterNetEvent('slk-cityhall:server:getIDs', giveStarterItems)
 
 RegisterNetEvent('QBCore:Client:UpdateObject', function()
-    QBCore = exports['qb-core']:GetCoreObject()
+    QBCore = exports['slk-core']:GetCoreObject()
 end)
 
 -- Commands
